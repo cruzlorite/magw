@@ -23,7 +23,7 @@ class GridWorldEnv(gym.Env):
         self.window_size = 720  # The size of the PyGame window
 
         self.observation_space = spaces.Dict({
-                "agents": spaces.Box(0, size - 1, shape=(nagents,2), dtype=int),
+                "locations": spaces.Box(0, size - 1, shape=(nagents,2), dtype=int),
                 "targets": spaces.Box(0, size - 1, shape=(nagents,2), dtype=int)
             }
         )
@@ -49,8 +49,8 @@ class GridWorldEnv(gym.Env):
 
     def _get_obv(self):
         return {
-            "agent_locations": self._agent_locations,
-            "agent_targets": self._agent_targets
+            "locations": self._agent_locations,
+            "targets": self._agent_targets
         }
     
     def _get_info(self):
@@ -92,25 +92,25 @@ class GridWorldEnv(gym.Env):
     
     def step(self, action):
         agent_to_move = action["agent_to_move"]
-        old_location = np.array(self._agent_locations[agent_to_move])
+        old = np.array(self._agent_locations[agent_to_move])
         direction = self._action_to_direction[action["action"]]
 
         # We use `np.clip` to make sure we don't leave the grid
-        new_location = np.clip(
-            old_location + direction, 0, self.size - 1
+        new = np.clip(
+            old + direction, 0, self.size - 1
         )
 
-        self._agent_locations[agent_to_move] = new_location
+        self._agent_locations[agent_to_move] = new
 
         # If two agents have the same location, we also terminate
-        invalid_action = self._grid[*new_location] == 1
+        invalid_action = self._grid[new[0], new[1]] == 1
 
         # An episode is done if all agents have reached the target
         terminated = invalid_action or np.array_equal(self._agent_locations, self._agent_targets)
 
         # Update grid with new agent location
-        self._grid[*old_location] = 0
-        self._grid[*new_location] = 1
+        self._grid[old[0], old[1]] = 0
+        self._grid[new[0], new[1]] = 1
 
         # Maximun distance an agent can be from its target
         max_distance = (self.size - 1) * 2
