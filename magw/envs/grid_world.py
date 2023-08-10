@@ -11,7 +11,7 @@ from gymnasium import spaces
 class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode=None, size=3, nagents=2):
+    def __init__(self, render_mode=None, size=16, nagents=16):
         """
         """
         assert size > 2
