@@ -48,6 +48,9 @@ class GridWorldEnv(gym.Env):
         self.window = None
         self.clock = None
 
+    def _total_distance(self):
+        return np.sum(np.abs(self._agent_locations - self._agent_targets))
+
     def _get_obv(self):
         return {
             "locations": self._agent_locations,
@@ -57,7 +60,8 @@ class GridWorldEnv(gym.Env):
     def _get_info(self):
         return {
             "grid": self._grid,
-            "size": self.size
+            "size": self.size,
+            "total": self._previous_total_distance
         }
 
     def reset(self, seed=None, options=None):
@@ -80,6 +84,9 @@ class GridWorldEnv(gym.Env):
         # 0 means that the square is free, more than 0, that the squera is occupied
         self._grid = np.full((self.size, self.size), 0, dtype=int)
         self._grid[self._agent_locations[:, 0], self._agent_locations[:, 1]] = 1
+
+        # Initial total distance
+        self._previous_total_distance = slice._total_distance()
 
         observation = self._get_obv()
         info = self._get_info()
@@ -115,11 +122,13 @@ class GridWorldEnv(gym.Env):
 
         # Maximun distance an agent can be from its target
         max_distance = (self.size - 1) * 2
+        # Maximun total distance of all agents combined
         max_distance = self.nagents * max_distance
 
         # Compute distance to target of all agents
-        total_distance = np.sum(np.abs(self._agent_locations - self._agent_targets))
-        reward = -total_distance if not invalid_action else -1000000
+        total_distance = self._total_distance()
+        reward = total_distance - self._previous_total_distance if not invalid_action else -10000
+        self._previous_total_distance = total_distance
 
         observation = self._get_obv()
         info = self._get_info()
