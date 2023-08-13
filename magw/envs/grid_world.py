@@ -127,7 +127,7 @@ class GridWorldEnv(gym.Env):
 
         # Compute distance to target of all agents
         total_distance = self._total_distance()
-        reward = self._previous_total_distance - total_distance if not invalid_action else -10000
+        reward = self._previous_total_distance - total_distance if not invalid_action else -1
         self._previous_total_distance = total_distance
 
         observation = self._get_obv()
