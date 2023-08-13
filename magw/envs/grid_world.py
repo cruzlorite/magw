@@ -28,13 +28,14 @@ class GridWorldEnv(gym.Env):
             }
         )
 
-        # We have 4 actions, corresponding to "right", "up", "left" and "down"
+        # We have 4 actions, corresponding to "stop", "right", "up", "left" and "down"
         self.action_space = spaces.Dict({
                 "agent_to_move": spaces.Discrete(nagents),
-                "action": spaces.Discrete(4)
+                "action": spaces.Discrete(5)
         })
 
         self._action_to_direction = [
+            np.array([0, 0]),
             np.array([1, 0]),
             np.array([0, 1]),
             np.array([-1, 0]),
@@ -58,7 +59,6 @@ class GridWorldEnv(gym.Env):
             "grid": self._grid,
             "size": self.size
         }
-
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
