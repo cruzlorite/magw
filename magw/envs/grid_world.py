@@ -86,7 +86,7 @@ class GridWorldEnv(gym.Env):
         self._grid[self._agent_locations[:, 0], self._agent_locations[:, 1]] = 1
 
         # Initial total distance
-        self._previous_total_distance = slice._total_distance()
+        self._previous_total_distance = self._total_distance()
 
         observation = self._get_obv()
         info = self._get_info()
