@@ -55,7 +55,8 @@ class GridWorldEnv(gym.Env):
     
     def _get_info(self):
         return {
-            "grid": self._grid
+            "grid": self._grid,
+            "size": self.size
         }
 
 
