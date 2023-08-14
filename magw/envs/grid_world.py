@@ -111,7 +111,8 @@ class GridWorldEnv(gym.Env):
         self._agent_locations[agent_to_move] = new
 
         # If two agents have the same location, we also terminate
-        invalid_action = self._grid[new[0], new[1]] == 1
+        #invalid_action = self._grid[new[0], new[1]] == 1
+        invalid_action = False
 
         # An episode is done if all agents have reached the target
         terminated = invalid_action or np.array_equal(self._agent_locations, self._agent_targets)
